@@ -1,14 +1,10 @@
 ---
 layout: page
-title: About iOS group in maihaoche
-description: description of us.
+title: About us
+description:
 ---
 
-## Company
-
-[卖好车 - 服务汽车经销商供应商的专业平台](http://www.maihaoche.com)
-
-## Group Members
+## Who we are
 
 - [徐杰（阿杰）](http://mesird.com)
 - 余豪（周瑜）
@@ -19,5 +15,7 @@ description: description of us.
 - 方俊（鹿丸）
 - 周锐（以撒）
 
+## Where we from
 
+[卖好车 - 服务汽车经销商供应商的专业平台](http://www.maihaoche.com)
 
