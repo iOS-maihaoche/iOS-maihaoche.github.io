@@ -5,6 +5,7 @@ author: "ajie"
 description: 卖好车 iOS 团队代码规范
 layout: post
 header: iOS code guideline
+metadata: code guideline maihaoche
 ---
 
 # 卖好车 iOS 开发规范

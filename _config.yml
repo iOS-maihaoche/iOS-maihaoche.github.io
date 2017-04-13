@@ -16,10 +16,11 @@
 title: maihaoche iOS group
 author: iOS@maihaoche
 description: Sharing the tech.
-baseurl: "/" # the subpath of your site, e.g. /blog
+baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://iOS-maihaoche.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 lang: cn
 timezone: UTC
+theme: jekyll-whiteglass
 exclude:
   - Gemfile
   - Gemfile.lock
