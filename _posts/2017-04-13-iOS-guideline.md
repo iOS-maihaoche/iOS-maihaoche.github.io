@@ -1,6 +1,9 @@
 ---
-title: iOS 代码规范
+title: "iOS 代码规范"
+category: group
+author: "ajie"
 description: 卖好车 iOS 团队代码规范
+layout: post
 header: iOS code guideline
 ---
 

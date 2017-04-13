@@ -1,7 +1,7 @@
 ---
 layout: page
-title: About us
-description:
+title: "About"
+permalink: /about/
 ---
 
 ## Who we are
