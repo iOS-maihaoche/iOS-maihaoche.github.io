@@ -10,7 +10,7 @@ metadata: code guideline maihaoche
 
 # 卖好车 iOS 开发规范
 
-*version 1.1*
+*version 1.2*
 
 ## 开发规范介绍
 本文是卖好车 iOS 开发规范说明，该规范非单纯的代码规范，是集成了公司项目管理规范、iOS 代码规范、iOS 项目开发规范以及苹果证书管理相关等内容，主要分为以下几个章节：
@@ -48,8 +48,8 @@ Quora 上曾今有一个热门问题叫做，[What is the hardest thing you do a
 * 不同的项目设置对应的 ClassPrefix，类名的前缀必须是项目对应的类前缀（如：**MHCB2B**）
 * 不同的业务模块，类名的前缀后添加对应的模块前缀（如：MHCB2B**DMS**）
 * 类名后缀不要采用缩写，保持单词拼写完整，保证能够清晰表述该类的作用
-	* 正例：MHCB2BDMS**HomeViewController**，MHCB2BSeekCar**AllQuoteViewController**
-	* 反例：MHCB2B**NoteGroupSendVC**，MHCB2B**PVModel**
+    * 正例：MHCB2BDMS**HomeViewController**，MHCB2BSeekCar**AllQuoteViewController**
+    * 反例：MHCB2B**NoteGroupSendVC**，MHCB2B**PVModel**
 
 #### 变量
 
@@ -491,7 +491,9 @@ Podfile 中定义了所有依赖库及其对应的版本号。
 
 ##### Service 模块
 
-添加的新接口注释规范及命名方式与原有接口要保持一致，可参考 `MHCB2BCommonService.h`
+* 对于新增的 Service 库，命名需要满足：`MHCB2B` + `业务模块名称` + `Service`，如：`MHCB2BDMSService`
+
+* 添加的新接口注释规范及命名方式与原有接口要保持一致，可参考 `MHCB2BCommonService.h`
 
 ```objc
 /**
@@ -504,7 +506,7 @@ Podfile 中定义了所有依赖库及其对应的版本号。
 - (void)loginWithUserName:(NSString *)userName password:(NSString *)password andResultHandler:(ResultHandler)resultHandler;
 ```
 
-Service 中的接口要保持干净，不允许掺和业务逻辑代码，若接口请求参数较多，则在业务代码中用 `NSDictionary` 组装再传入。
+* Service 中的接口要保持干净，不允许掺和业务逻辑代码，若接口请求参数较多，则在业务代码中用 `NSDictionary` 组装再传入。
 
 ```
 - (void)dmsAddAnnotateWithParameters:(NSMutableDictionary *)parameters andResultHandler:(ResultHandler)resultHandler {
@@ -512,7 +514,7 @@ Service 中的接口要保持干净，不允许掺和业务逻辑代码，若接
 }
 ```
 
-接口对应的请求地址以宏定义的方式定义在对应 Service 的实现文件中。
+* 接口对应的请求地址以宏定义的方式定义在对应 Service 的实现文件中。
 
 ```
 #define DMSSmsTemplateTypeList  @"v2/dms/msg/model/list.json"  // DMS 短信模板类型列表
@@ -526,11 +528,22 @@ Service 中的接口要保持干净，不允许掺和业务逻辑代码，若接
 
 ##### Module 模块
 
-在往 Category 中添加新的接口时，要遵守以下几点规范：
+* 类文件均放置在 Classes 文件夹下，静态资源均放置在 Assets 文件夹下（若工程中没有 Assets 文件夹，去对应的目录下把该文件夹拖入到工程中），任何新增加的文件或资源都需要在主工程下运行 `pod install` 来重新生成 pod 项目，一个示例的文件目录如下
 
-* 接口的参数要明确到类型，尽量不要使用 `NSDictionary` 作为参数
-* 若参数为模块中的 Model，则将该 Model 下沉到公共库（`MHCB2BEntity`），并在 Category 中引用
-* 注释规范参照原有接口的格式
+```
+| MHCHttpManager
+    | MHCHttpManager
+        | Classes
+    | Resources
+        | MHCHttpManager
+            | Assets
+```
+
+* 在往 Category 中添加新的接口时，要遵守以下几点规范：
+
+    1. 接口的参数要明确到类型，尽量不要使用 `NSDictionary` 作为参数
+    2. 若参数为模块中的 Model，则将该 Model 下沉到公共库（MHCB2BEntity），并在 Category 中引用
+    3. 注释规范参照原有接口的格式
 
 ```objc
 /**
@@ -545,11 +558,27 @@ Service 中的接口要保持干净，不允许掺和业务逻辑代码，若接
 - (UIViewController *)MHCB2BAnnotateDetailViewControllerWithClueLogId:(NSNumber *)clueLogId showClientDetailItem:(BOOL)showClientDetailItem userName:(NSString * _Nullable)userName andNeedKeyboard:(BOOL)needKeyboard;
 ```
 
-向 Target 中添加新接口时，要遵守以下几点规范：
+* 向 Target 中添加新接口时，要遵守以下几点规范：
 
-* 接口的返回值不可以为 `void`，因为 CTMediator 在运行时调用 Target 中的接口，并默认返回方法的返回值
-* Target 中的接口参数均使用 `NSDictionary`
-* 注释规范参照原有接口的格式
+    1. 接口的返回值不可以为 `void`，因为 CTMediator 在运行时调用 Target 中的接口，并默认返回方法的返回值
+    2. Target 中的接口参数均使用 `NSDictionary`
+    3. 注释规范参照原有接口的格式
+
+* 若要处理服务端返回特殊的错误码，在接口请求 block 中使用 [error.userInfo[kMHCNetworkErrorCodeKey] integerValue] 来获取错误码。
+
+```objc
+[[MHCB2BSomeService service] requestSomeDataWithResultHandler:^(BOOL success, NSDictionary *result, NSError *error) {
+    if (success) {
+        // success code
+    } else {
+        // error code
+        NSInteger resultCode = [error.userInfo[kMHCNetworkErrorCodeKey] integerValue];
+        if (resultCode == 1024) {
+            // some code here
+        }
+    }
+}];
+```
 
 ##### 基础层
 
@@ -560,6 +589,14 @@ Service 中的接口要保持干净，不允许掺和业务逻辑代码，若接
 
 切记！基础层不得修改已有方法的 `方法名`、`参数`、`返回值`，若原方法已弃用，则要在方法后添加 `NS_DEPRECATED_IOS` 宏；若原方法不满足新功能需求，则自行新增新方法；若原方法存在 bug，先确认该方法被调用的模块是否有问题，若无问题则另行新增方法，若有问题则将原方法修正后一并修改所有调用处。
 
+##### 使用脚本进行批量 Pod 更新
+
+组件化完成后，同一时间开发的项目可能会本地引用多个 pod，随之而来的 pod 管理工作就显得非常突出了。因此，通过脚本来实现该工作就会非常有必要。
+
+[podsync 脚本下载地址](http://cf.dawanju.net/pages/viewpage.action?pageId=12459647)
+
+该脚本会扫描 podfile 文件，将本地引用的 pod 切换到对应的分支，并拉取最新的代码。
+
 #### 5. 开发结束
 
 组件化的开发过程中，每个 pod 库也需要严格按照 Git flow 要求进行。
@@ -568,9 +605,41 @@ Release 开发结束，主工程合并代码到 Master 之前，需要在 Pofile
 
 ## 代码复审
 
+Code Review，作为大公司开发流程中必要的一环，不仅能降低线上问题的出现率，也能统一团队成员编码风格，但由于国内互联网公司均以业务为导向，项目周期短无法安排代码复审，导致线上问题颇多，这也是国内开发者钟爱 Hot Fix 的原因之一。
+
+我司在以往的客户端开发过程中尝试过 Code Review，但组织形式和后期归档都做的不到位，因此效果并没有体现出来，后来 Code Review 这项环节也就随着项目周期紧张慢慢消失了。
+
+现在，客户端重新整理了 [Code Review 规范](http://cf.dawanju.net/pages/viewpage.action?pageId=12460247)，并将在接下来的项目开发过程中严格执行，希望你能够认真查阅该文档。
+
 ## 证书管理
+
+> Comming soon...
 
 ## JSPatch
 
+为了及时修复线上出现的 Bug 而不需要发布新版本，项目中引入了 JSPatch。
+
+JSPatch 是一个将 JavaScript 脚本通过 Runtime 转化为 Objective-C 代码的工具包，将写好的 JS 脚本发布到 [JSPatch 平台](http://www.jspatch.com)上并全量下发，用户手中的 App 在启动时会自动请求该 JS 脚本并转换为 OC 代码，替换到产生问题的代码来达到修复线上 Bug 的目的。
+
+JSPatch 在 [Github 上的 Wiki](https://github.com/bang590/JSPatch/wiki) 中对其语法以及一些常见问题有非常详细的描述，你可以在上面找到任何你想要的东西。JSPatch 的功能不仅仅是能够完成线上 Bug 修复，还可以做更多的事情，如：灰度测试、新功能开发等等。
+
+该工具包也可以在本地环境进行测试，目前 bugatti 中已经配置了 JSPatch 脚本的获取方式，只需要在主工程中添加 main.js 即可进行脚本编写并测试。
+
+### 线上 Bug 修复
+
+1. 切换到线上对应的版本，在代码中定位自己的 Bug，并使用 OC 在工程中修复
+2. 将修复后的代码通过 [JSPatch 代码转换工具](http://www.jspatch.com/Tools/convertor) 生成对应的 JS 代码
+3. 在主工程中新建 `main.js` 文件，并把刚才生成的 JS 代码拷贝到文件中，再对 JS 代码的语法做校正（通过工具生成的 JS 代码会遗漏部分类的引用、对枚举值无法转换、对 `YES/NO` 不会转换为 `true/false` 等，这些未转换的语法需要人工校正）
+4. 运行项目并查看脚本是否有问题
+5. 若脚本没有问题，则将 `main.js` 发布到 JSPatch 平台
+
+> 注：若在 JSPatch 平台上已经存在了对应版本的脚本，需要将这些脚本拷贝到工程中的 main.js 一并做校验，是否还能够正常运行，均无问题的情况下，再把脚本发布到 JSPatch 平台
+
 ## Cocoapods
+
+目前 bugatti 项目管理以及组件化实践方案都是使用 Cocoapods 来完成的，作为一款 `iOS/macOS/tvOS/watchOS` 等多平台项目管理工具，你需要知道它的简单原理和基本的使用。
+
+关于 Cocoapods 的安装、升级、卸载以及相应的操作，都可以在 [官方网站](https://guides.cocoapods.org) 上进行查阅。
+
+
 
