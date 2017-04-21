@@ -64,7 +64,7 @@ Quora 上曾今有一个热门问题叫做，[What is the hardest thing you do a
 
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, assign) BOOL bDisplayTab; // 是否要显示 Tab
-@property (nonatomic, weak) IBOutlet 
+@property (nonatomic, weak) IBOutlet UIButton *publishButton;
 
 @end
 
@@ -640,6 +640,3 @@ JSPatch 在 [Github 上的 Wiki](https://github.com/bang590/JSPatch/wiki) 中对
 目前 bugatti 项目管理以及组件化实践方案都是使用 Cocoapods 来完成的，作为一款 `iOS/macOS/tvOS/watchOS` 等多平台项目管理工具，你需要知道它的简单原理和基本的使用。
 
 关于 Cocoapods 的安装、升级、卸载以及相应的操作，都可以在 [官方网站](https://guides.cocoapods.org) 上进行查阅。
-
-
-
