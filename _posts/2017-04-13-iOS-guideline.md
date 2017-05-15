@@ -10,7 +10,7 @@ metadata: code guideline maihaoche
 
 # 卖好车 iOS 开发规范
 
-*version 1.2*
+*version 1.3*
 
 ## 开发规范介绍
 本文是卖好车 iOS 开发规范说明，该规范非单纯的代码规范，是集成了公司项目管理规范、iOS 代码规范、iOS 项目开发规范以及苹果证书管理相关等内容，主要分为以下几个章节：
@@ -22,7 +22,6 @@ metadata: code guideline maihaoche
 * 证书管理
 * JSPatch
 * Cocoapods
-
 
 ## Git flow
 Git flow 是项目开发过程中的一套标准 git 使用流程，它作为卖好车技术部基础技能，在日常开发过程中必须严格遵循 Git flow 流程，对代码进行合理的管理。
@@ -58,7 +57,7 @@ Quora 上曾今有一个热门问题叫做，[What is the hardest thing you do a
 ```
 // in .m file
 @interface MHCB2BSeekCarHomeController() {
-    NSInteger _myClueNewNumber;     // 我的寻车线索数
+    NSInteger _myClueNewNumber;     // 我的寻车线索数==~~~~==
     BOOL _bMyQuoteNewPoint;         // 是否需要显示红点
 }
 
@@ -268,27 +267,54 @@ iOS 开发中常见的注释有以下几种：
 
 项目中的每个 ViewController 都需要去继承项目的公共基类，来实现一些通用的功能，如断网页面显示、阿里云埋点、页面进入打印等。现有的公共基类有：
 
-*MHCB2BBaseDataListViewController*
-
-用于带有网络请求的列表页面，支持断网显示无网页面，点击重新加载继续网络请求
-
-*MHCB2BBaseDataViewController*
-
-用于带有网络请求的非列表页面，支持断网显示无网页面，点击重新加载刷新网络请求
-
-*MHCB2BBaseTableView*
-
-用于 Table View，现已弃用
-
-*MHCB2BBaseTableViewController*
-
-用于列表页面，现已弃用
-
-*MHCB2BBaseViewController*
+**MHCB2BBaseViewController**
 
 所有页面的基类，提供阿里云埋点，页面进入打印功能
 
-*MHCB2BBaseWebViewController*
+```objc
+// 页面的内容大小（用于调整无网络页面的布局）
+@property (nonatomic, assign) UIEdgeInsets viewContentInsets;
+
+// 重写该方法来自定义返回逻辑校验（左上角返回及左划返回）
+- (BOOL)naviBack:(id)object;
+```
+
+**MHCB2BBaseDataViewController**
+
+用于带有网络请求的非列表页面，支持断网显示无网页面，点击重新加载刷新网络请求
+
+```objc
+// 无网页面的 “重新加载” 按钮的回调方法
+- (void)refreshData;
+
+// 重写该方法来自定义无网操作
+- (void)handleNoNetworkCondition;
+
+// 重写该方法来自定义有网操作
+- (void)handleNetworkOkCondition;
+```
+
+**MHCB2BBaseDataListViewController**
+
+用于带有网络请求的列表页面，支持断网显示无网页面，点击重新加载继续网络请求。
+
+```objc
+// 获取当前使用的 tableView 实例
+- (MHCB2BBaseTableView *)getTableView;
+
+// 无网络的 “加载更多” 按钮回调方法（目前还未使用）
+- (void)loadMoreData;
+```
+
+**MHCB2BBaseTableView**
+
+用于 Table View，现已弃用
+
+**MHCB2BBaseTableViewController**
+
+用于列表页面，现已弃用
+
+**MHCB2BBaseWebViewController**
 
 Web View 的基类
 
@@ -640,3 +666,6 @@ JSPatch 在 [Github 上的 Wiki](https://github.com/bang590/JSPatch/wiki) 中对
 目前 bugatti 项目管理以及组件化实践方案都是使用 Cocoapods 来完成的，作为一款 `iOS/macOS/tvOS/watchOS` 等多平台项目管理工具，你需要知道它的简单原理和基本的使用。
 
 关于 Cocoapods 的安装、升级、卸载以及相应的操作，都可以在 [官方网站](https://guides.cocoapods.org) 上进行查阅。
+
+
+
